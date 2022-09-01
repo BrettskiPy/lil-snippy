@@ -11,6 +11,12 @@ class Rectangle:
     y1: int = 0
     x2: int = 0
     y2: int = 0
+    
+    def display_position(self) -> None:
+        print(self.x1)
+        print(self.y1)
+        print(self.x2)
+        print(self.y2)
 
 
 def take_bounded_screenshot(x1, y1, x2, y2):
@@ -86,7 +92,7 @@ class Application:
         self.snip_surface.bind("<ButtonRelease-1>", self.on_drag_release)
 
     def on_drag_release(self, event):
-        self.display_rectangle_position()
+        self.rect.display_position()
         self.snip_surface.destroy()
         self.master_screen.withdraw()
         calc_screenshot_bounds(self.rect)
@@ -109,13 +115,7 @@ class Application:
         )
         self.coords_label.place(x=self.rect.x2, y=self.rect.y2)
         self.coords_label.config(text=f"X:{self.rect.x2} Y:{self.rect.y2}")
-        self.display_rectangle_position()
-
-    def display_rectangle_position(self):
-        print(self.rect.x1)
-        print(self.rect.y1)
-        print(self.rect.x2)
-        print(self.rect.y2)
+        self.rect.display_position()
 
 
 if __name__ == "__main__":
