@@ -16,6 +16,7 @@ class Application:
         self.add_menu_buttons()
 
         self.outside_snip_color = ["#a0a0a0"]
+        self.snip_border_color = ["#FF0000"]
 
     def add_menu_buttons(self) -> None:
         self.menu_button_bar = Frame(self.menu_frame)
@@ -40,18 +41,47 @@ class Application:
 
         options_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Customize", menu=options_menu)
-        options_menu.add_command(label="Colors", command=self.open_color_window)
+        options_menu.add_command(
+            label="Background Color", command=self.open_outside_snip_color_window
+        )
+        options_menu.add_command(
+            label="Rectangle Color", command=self.open_snip_border_color_window
+        )
+        options_menu.add_command(
+            label="Rectangle Size", command=self.open_snip_size_window
+        )
 
         about_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="About", menu=about_menu)
         about_menu.add_command(label="Info", command=self.master.quit)
 
-    def open_color_window(self):
+    def open_outside_snip_color_window(self):
         self.outside_snip_color = colorchooser.askcolor()
 
-    def close_slider_window(self, slider_window):
-        slider_window.destroy()
-        self.slider_window_open = False
+    def open_snip_border_color_window(self):
+        self.snip_border_color = colorchooser.askcolor()
+
+    def open_snip_size_window(self):
+        self.size_window = Toplevel()
+        self.size_window.title("Rectangle Size")
+        self.size_window.geometry("200x100")
+        self.size_window.attributes("-topmost", True)
+
+        size_scale = Scale(
+            self.size_window, from_=1, to=5, orient=HORIZONTAL, length=150
+        )
+        size_scale.pack(pady=10)
+
+        apply_button = Button(
+            self.size_window,
+            text="Apply",
+            command=lambda: self.set_snip_size(size_scale.get(), self.size_window),
+        )
+        apply_button.pack()
+
+    def set_snip_size(self, size, size_window):
+        self.snip_size = size
+        size_window.destroy()
 
     def create_snipping_environment(self) -> None:
         self.master.withdraw()
@@ -87,10 +117,16 @@ class Application:
         self.snip_surface.bind("<ButtonRelease-1>", self.on_drag_release)
 
     def on_snip_button_press(self, event: Event) -> None:
-        """Saves the inital position of the rectangle on the screan"""
+        "Saves the inital position of the rectangle on the screan"
         self.rect = SnipRectangle(x1=event.x, y1=event.y)
         self.snip_surface.create_rectangle(
-            0, 0, 1, 1, outline="red", width=3, fill="maroon3"
+            0,
+            0,
+            1,
+            1,
+            outline=self.snip_border_color[-1],
+            width=self.snip_size,
+            fill="maroon3",
         )
 
     def on_snip_drag(self, event: Event) -> None:
