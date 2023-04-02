@@ -20,13 +20,8 @@ class SnipRectangle:
         return x1, y1, (x2 - x1), (y2 - y1)
 
 
-def bounded_screenshot(bounds: Tuple[int, int, int, int]) -> None:
-    # Check if the folder exists, create it if not
-    snips_directory = "snips"
-    if not os.path.exists(snips_directory):
-        os.makedirs(snips_directory)
-
+def bounded_screenshot(image_save_dir, bounds: Tuple[int, int, int, int]) -> None:
     # Take the screenshot and save it to the folder
     image = pyautogui.screenshot(region=(bounds))
     file_name = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-    image.save(os.path.join(snips_directory, f"{file_name}.png"))
+    image.save(os.path.join(image_save_dir, f"{file_name}.png"))

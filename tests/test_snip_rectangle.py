@@ -1,5 +1,5 @@
 from pytest import fixture
-from app.screenshot_tools import SnipRectangle
+from app.snip_tools import SnipRectangle
 
 
 def test_SnipRectangle(rectangle: SnipRectangle) -> None:

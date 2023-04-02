@@ -1,6 +1,5 @@
 import pytest
-from app.screenshot_tools import SnipRectangle
-
+from app.snip_tools import SnipRectangle
 
 @pytest.fixture
 def rectangle():
