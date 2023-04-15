@@ -1,34 +1,24 @@
-from pytest import fixture
+from hypothesis import given, strategies as st
 from app.snip_tools import SnipRectangle
 
 
-def test_SnipRectangle(rectangle: SnipRectangle) -> None:
-    rect = rectangle()
-    expected_init_points = {"x1": 0, "y1": 0, "x2": 0, "y2": 0}
+@given(
+    x1=st.integers(min_value=-100, max_value=100),
+    y1=st.integers(min_value=-100, max_value=100),
+    x2=st.integers(min_value=-100, max_value=100),
+    y2=st.integers(min_value=-100, max_value=100),
+)
+def test_SnipRectangle_init_and_bounds(x1, y1, x2, y2) -> None:
+    rect = SnipRectangle(x1, y1, x2, y2)
+    expected_init_points = {"x1": x1, "y1": y1, "x2": x2, "y2": y2}
     assert rect.__dict__ == expected_init_points
 
-    rect = rectangle(-1, -2, -3, -4)
-    expected_init_points = {"x1": -1, "y1": -2, "x2": -3, "y2": -4}
-    assert rect.__dict__ == expected_init_points
-
-    rect = rectangle(1, 2, 3, 4)
-    expected_init_points = {"x1": 1, "y1": 2, "x2": 3, "y2": 4}
-    assert rect.__dict__ == expected_init_points
-
-
-def test_SnipRectangle_bounds(rectangle: SnipRectangle) -> None:
-    rect1 = rectangle()
-    expected_init_bounds = (0, 0, 0, 0)
-    assert rect1.bounds == expected_init_bounds
-
-    rect2 = rectangle(1, 2, 3, 4)
-    expected_bounds = (1, 2, 2, 2)
-    assert rect2.bounds == expected_bounds
-
-    rect3 = rectangle(-100, -2, -30, -10)
-    expected_bounds = (-100, -10, 70, 8)
-    assert rect3.bounds == expected_bounds
-
-    rect4 = rectangle(50, 32, -123, -10)
-    expected_bounds = (-123, -10, 173, 42)
-    assert rect4.bounds == expected_bounds
+    sorted_x1, sorted_x2 = sorted([x1, x2])
+    sorted_y1, sorted_y2 = sorted([y1, y2])
+    expected_bounds = (
+        sorted_x1,
+        sorted_y1,
+        sorted_x2 - sorted_x1,
+        sorted_y2 - sorted_y1,
+    )
+    assert rect.bounds == expected_bounds
