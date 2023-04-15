@@ -1,8 +1,8 @@
 from tkinter import *
 from tkinter import colorchooser, filedialog
 from snip_tools import SnipRectangle, bounded_screenshot
-from PIL import Image, ImageTk
 import os
+
 
 class Application:
     def __init__(self, master: Tk) -> None:
@@ -14,11 +14,11 @@ class Application:
 
         self.snip_border_width = 2
         self.snip_border_size_window = None
-        self.snip_save_directory = os.path.join(os.path.expanduser('~'), 'Desktop')
+        self.snip_save_directory = os.path.join(os.path.expanduser("~"), "Desktop")
         self.snip_coordinates_toggle = True
 
         self.add_menu_bar()
-        self.menu_frame = Frame(self.master, background='black')
+        self.menu_frame = Frame(self.master, background="black")
         self.menu_frame.pack(fill=BOTH, expand=YES)
         self.add_main_menu_buttons()
 
@@ -26,7 +26,7 @@ class Application:
         self.snip_border_color = ["#FF0000"]
 
     def add_main_menu_buttons(self) -> None:
-        self.menu_button_bar = Frame(self.menu_frame, bg='grey10')
+        self.menu_button_bar = Frame(self.menu_frame, bg="grey10")
         self.menu_button_bar.pack(padx=10, pady=6)
 
         self.photo = PhotoImage(file="app/assets/camera_icon.png")
@@ -35,10 +35,9 @@ class Application:
             height=30,
             width=30,
             command=self.create_snipping_environment,
-            image=self.photo
+            image=self.photo,
         )
-        self.snipButton.pack(side='left', padx=10, pady=6)
-
+        self.snipButton.pack(side="left", padx=10, pady=6)
 
     def add_menu_bar(self) -> None:
         self.menu_bar = Menu(self.master)
@@ -50,7 +49,6 @@ class Application:
             label="Set Save Location", command=self.set_save_directory
         )
         file_menu.add_command(label="Quit", command=self.master.quit)
-
 
         self.options_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Customize", menu=self.options_menu)
@@ -70,7 +68,7 @@ class Application:
         about_menu = Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="About", menu=about_menu)
         about_menu.add_command(label="Info", command=self.master.quit)
-    
+
     def toggle_snip_coordinates(self):
         if self.snip_coordinates_toggle:
             self.snip_coordinates_toggle = False
@@ -80,8 +78,8 @@ class Application:
             self.options_menu.entryconfig(4, label="Snip Coordinates: On")
 
     def set_save_directory(self):
-        self.snip_save_directory = filedialog.askdirectory(initialdir = "app")
-    
+        self.snip_save_directory = filedialog.askdirectory(initialdir="app")
+
     def open_outside_snip_color_window(self):
         self.outside_snip_color = colorchooser.askcolor()
 
@@ -105,7 +103,9 @@ class Application:
         apply_button = Button(
             self.snip_border_size_window,
             text="Apply",
-            command=lambda: self.set_snip_border_size(size_scale.get(), self.snip_border_size_window),
+            command=lambda: self.set_snip_border_size(
+                size_scale.get(), self.snip_border_size_window
+            ),
         )
         apply_button.pack()
 
@@ -151,7 +151,11 @@ class Application:
     def on_snip_button_press(self, event: Event) -> None:
         "Saves the inital position of the rectangle on the screan"
         self.rect = SnipRectangle(x1=event.x, y1=event.y)
-        self.snip_surface.create_rectangle(0, 0, 1, 1,
+        self.snip_surface.create_rectangle(
+            0,
+            0,
+            1,
+            1,
             outline=self.snip_border_color[-1],
             width=self.snip_border_width,
             fill="maroon3",
